@@ -1,0 +1,18 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Система "Тёплый дом" - Диаграмма контекста
+
+Person(customer, "Пользователь", "Владелец умного дома")
+System_Boundary(system_boundary, "Тёплый дом") {
+  System(monolith, "Монолитное приложение", "Go, PostgreSQL")
+}
+System(device_partner, "Устройства партнёров", "Датчики, реле, камеры и т.д.")
+System(internet, "Интернет")
+
+Rel(customer, monolith, "Использует через", "HTTPS")
+Rel(monolith, internet, "Отправляет команды и получает данные", "HTTP/MQTT")
+Rel(internet, device_partner, "Подключено к", "")
+Rel(device_partner, monolith, "Отправляет данные о состоянии", "HTTP/MQTT")
+
+@enduml
