@@ -81,7 +81,10 @@
 
 Добавьте диаграмму.
 
-Диаграмма компонентов (Components)
+[Диаграмма компонентов](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/C4_component.puml)
+
+<img width="540" height="936" alt="c4_component(warmhouse)" src="https://github.com/user-attachments/assets/64701ec7-e056-4c78-81fc-95ebf64a5cee" />
+
 
 Добавьте диаграмму для каждого из выделенных микросервисов.
 
