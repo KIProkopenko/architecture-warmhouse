@@ -1,0 +1,76 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+' Или можно использовать стандартный стиль для ER-диаграмм
+
+left to right direction
+
+entity "User" as U {
+  * id : UUID <<PK>>
+  --
+  email : VARCHAR
+  name : VARCHAR
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "House" as H {
+  * id : UUID <<PK>>
+  --
+  user_id : UUID <<FK>>
+  address : TEXT
+  name : VARCHAR
+  created_at : TIMESTAMP
+}
+
+entity "Device" as D {
+  * id : UUID <<PK>>
+  --
+  type_id : UUID <<FK>>
+  house_id : UUID <<FK>>
+  serial_number : VARCHAR
+  status : VARCHAR
+  last_seen : TIMESTAMP
+  metadata : JSONB
+}
+
+entity "DeviceType" as DT {
+  * id : UUID <<PK>>
+  --
+  vendor : VARCHAR
+  model : VARCHAR
+  category : VARCHAR
+  capabilities : JSONB
+}
+
+entity "TelemetryData" as T {
+  * id : UUID <<PK>>
+  --
+  device_id : UUID <<FK>>
+  timestamp : TIMESTAMP
+  metric_type : VARCHAR
+  value : DECIMAL
+}
+
+entity "Partner" as P {
+  * id : UUID <<PK>>
+  --
+  name : VARCHAR
+  api_endpoint : VARCHAR
+  auth_config : JSONB
+}
+
+entity "PartnerDeviceSchema" as PDS {
+  * id : UUID <<PK>>
+  --
+  partner_id : UUID <<FK>>
+  device_type_id : UUID <<FK>>
+  schema_definition : JSONB
+}
+
+U ||--o{ H : owns
+H ||--o{ D : contains
+D }o--|| DT : "is of type"
+D ||--o{ T : generates
+P ||--o{ PDS : defines
+DT ||--o{ PDS : "has schema for"
+@enduml
