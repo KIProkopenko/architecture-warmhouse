@@ -88,7 +88,10 @@
 
 Добавьте диаграмму для каждого из выделенных микросервисов.
 
-Диаграмма кода (Code)
+[Диаграмма кода](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/c4_code.puml)
+
+
+<img width="1494" height="1000" alt="c4_code(warmhouse)" src="https://github.com/user-attachments/assets/138ff748-3b03-4875-8542-b4715a6c0863" />
 
 Добавьте одну диаграмму или несколько.
 
