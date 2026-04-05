@@ -95,8 +95,52 @@
 
 Добавьте одну диаграмму или несколько.
 
-Задание 3. Разработка ER-диаграммы
-Добавьте сюда ER-диаграмму. Она должна отражать ключевые сущности системы, их атрибуты и тип связей между ними.
+### **Задание 3. Разработка ER-диаграммы**
+#### **1. Идентификация сущностей**
+
+На основе описания системы (управление устройствами, телеметрия, пользователи, дома, модули, интеграции с партнёрами), выделим основные сущности:
+
+1. **User** (Пользователь)
+2. **House** (Дом)
+3. **Device** (Устройство)
+4. **DeviceType** (Тип устройства)
+5. **TelemetryData** (Телеметрия)
+6. **Module** (Модуль - например, "отопление", "освещение", "ворота")
+7. **Partner** (Партнёр - производитель устройств)
+8. **PartnerDeviceSchema** (Схема устройства партнёра)
+
+*(Можно выделить и другие, но эти покрывают основной функционал.)*
+
+#### **2. Определение атрибутов**
+
+| Сущность             | Атрибуты                                                                                     |
+|----------------------|----------------------------------------------------------------------------------------------|
+| **User**             | `id: UUID`, `email: VARCHAR`, `name: VARCHAR`, `created_at: TIMESTAMP`, `updated_at: TIMESTAMP` |
+| **House**            | `id: UUID`, `user_id: UUID (FK)`, `address: TEXT`, `name: VARCHAR`, `created_at: TIMESTAMP`     |
+| **Device**           | `id: UUID`, `type_id: UUID (FK)`, `house_id: UUID (FK)`, `serial_number: VARCHAR`, `status: VARCHAR`, `last_seen: TIMESTAMP`, `metadata: JSONB` |
+| **DeviceType**       | `id: UUID`, `vendor: VARCHAR`, `model: VARCHAR`, `category: VARCHAR` (например, "thermostat", "light", "gate"), `capabilities: JSONB` |
+| **TelemetryData**    | `id: UUID`, `device_id: UUID (FK)`, `timestamp: TIMESTAMP`, `metric_type: VARCHAR` (например, "temperature", "humidity"), `value: DECIMAL` |
+| **Module**           | `id: UUID`, `name: VARCHAR`, `description: TEXT` (например, "Освещение", "Отопление", "Ворота") |
+| **Partner**          | `id: UUID`, `name: VARCHAR`, `api_endpoint: VARCHAR`, `auth_config                    |
+| **PartnerDeviceSchema** | `id: UUID`, `partner_id: UUID (FK)`, `device_type_id: UUID (FK)`, `schema_definition: JSONB` |
+
+---
+
+#### **3. Описание связей**
+
+| Связь                                | Тип                  | Описание                                                                                   |
+|-------------------------------------|----------------------|--------------------------------------------------------------------------------------------|
+| **User** — **House**                | 1 к N                | Один пользователь может владеть несколькими домами.                                       |
+| **House** — **Device**              | 1 к N                | Один дом может содержать несколько устройств.                                             |
+| **DeviceType** — **Device**         | 1 к N                | Один тип устройства может быть у многих устройств.                                        |
+| **Device** — **TelemetryData**      | 1 к N                | Одно устройство может генерировать много записей телеметрии.                               |
+| **Partner** — **PartnerDeviceSchema**| 1 к N                | Один партнёр может предоставлять схемы для множества типов устройств.                     |
+| **DeviceType** — **PartnerDeviceSchema**| N к 1               | Один тип устройства может соответствовать одной схеме партнёра.                           |
+
+**(Связи Many-to-Many, если возникнут, моделируются через промежуточные таблицы.)**
+
+<img width="968" height="290" alt="er_warmhouse" src="https://github.com/user-attachments/assets/d96dc068-2481-4760-bb02-197da2eb5ce4" />
+
 
 Задание 4. Создание и документирование API
 1. Тип API
