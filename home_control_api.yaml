@@ -35,7 +35,7 @@ components:
         command:
           type: string
           enum: [turn_on, turn_off, set_temperature, close_gate, open_gate]
-          example: "turn_on"  
+          example: "turn_on"   # ✅ Одно значение — исправлено!
         parameters:
           type: object
           additionalProperties: true
