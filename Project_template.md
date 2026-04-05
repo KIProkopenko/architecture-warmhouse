@@ -55,6 +55,9 @@
 #### **4. Визуализация контекста системы (C4)**
 [C4_context](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/%D0%A14_context(warmhouse).puml)
 
+<img width="414" height="789" alt="c4_context(warmhouse)" src="https://github.com/user-attachments/assets/201c19bb-ebe4-4266-bf8c-53b2198c3322" />
+
+
 
 **Описание диаграммы:**
 
