@@ -1,0 +1,19 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Микросервис "Home Control Service" - Диаграмма компонентов
+
+Container(home_control_service, "Home Control Service", "Java/Kotlin/Go", "Управление системами (отопление, свет, ворота)")
+
+Component(home_control_api, "Home Control API", "Spring Boot / Micronaut / Echo", "REST API")
+Component(home_control_logic, "Home Control Logic", "Business Logic Layer", "Правила управления, сценарии")
+Component(device_client, "Device Client", "HTTP/MQTT Client", "Клиент для взаимодействия с Device Management Service")
+
+System_Boundary(warmhouse_system, 'Экосистема "Тёплый дом"') {
+  Container(device_management_service, "Device Management Service", "Java/Kotlin/Go", "Регистрация, настройка, статус устройств")
+}
+
+Rel(home_control_api, home_control_logic, "Вызов методов", "Internal Call")
+Rel(home_control_logic, device_client, "Запрашивает список устройств и отправляет команды", "HTTP/JSON, MQTT")
+Rel(device_client, device_management_service, "Взаимодействует через API", "HTTP/JSON, MQTT")
+@enduml
