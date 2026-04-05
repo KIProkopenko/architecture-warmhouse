@@ -138,6 +138,8 @@
 | **DeviceType** — **PartnerDeviceSchema**| N к 1               | Один тип устройства может соответствовать одной схеме партнёра.                           |
 
 **(Связи Many-to-Many, если возникнут, моделируются через промежуточные таблицы.)**
+[Er_диаграмма](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/er_warmhouse.puml)
+
 
 <img width="968" height="290" alt="er_warmhouse" src="https://github.com/user-attachments/assets/d96dc068-2481-4760-bb02-197da2eb5ce4" />
 
