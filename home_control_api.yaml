@@ -1,0 +1,42 @@
+openapi: 3.0.3
+info:
+  title: Home Control API
+  description: Control home systems (heating, lights, gates)
+  version: 1.0.0
+servers:
+  - url: http://home-control-service:8080
+
+paths:
+  /actions/control-device:
+    post:
+      summary: Send command to device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendCommandRequest'
+      responses:
+        '202':
+          description: Command accepted
+        '400':
+          description: Invalid request
+        '404':
+          description: Device not found
+
+components:
+  schemas:
+    SendCommandRequest:
+      type: object
+      properties:
+        device_id:
+          type: string
+          format: uuid
+        command:
+          type: string
+          enum: [turn_on, turn_off, set_temperature, close_gate, open_gate]
+          example: "turn_on"   # ✅ Одно значение — исправлено!
+        parameters:
+          type: object
+          additionalProperties: true
+      required: [device_id, command]
