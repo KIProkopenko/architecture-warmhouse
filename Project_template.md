@@ -144,12 +144,24 @@
 <img width="968" height="290" alt="er_warmhouse" src="https://github.com/user-attachments/assets/d96dc068-2481-4760-bb02-197da2eb5ce4" />
 
 
-Задание 4. Создание и документирование API
-1. Тип API
-Укажите, какой тип API вы будете использовать для взаимодействия микросервисов. Объясните своё решение.
+###**Задание 4. Создание и документирование API**
 
-2. Документация API
-Здесь приложите ссылки на документацию API для микросервисов, которые вы спроектировали в первой части проектной работы. Для документирования используйте Swagger/OpenAPI или AsyncAPI.
+#### **1. Выбор типов API**
+
+- **REST API**:
+  - Для синхронных вызовов: получение списка устройств, отправка команд,ция, получение профиля.
+  - Примеры: `GET /devices`, `POST /commands`, `GET /users/{id}`
+- **AsyncAPI**:
+  - Для асинхронных событий: телеметрия с датчиков, события подключения/отключения устройств, срабатывания сценариев.
+  - Примеры: `telemetry.data.received`, `device.status.changed`
+
+
+#### **2. Документирование API**
+[telemetry_events_asyncapi](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/telemetry_events_asyncapi.yaml)
+
+[home_control_api](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/home_control_api.yaml)
+
+[device_management_api](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/device_management_api.yaml)
 
 Задание 5. Работа с docker и docker-compose
 Перейдите в apps.
