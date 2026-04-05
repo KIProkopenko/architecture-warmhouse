@@ -1,76 +1,50 @@
 @startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
-' Или можно использовать стандартный стиль для ER-диаграмм
+' КЛАССИЧЕСКИЙ ER-СТИЛЬ (без C4, без компонентов)
+' Используем entity + relation + кардинальность
 
 left to right direction
 
-entity "User" as U {
-  * id : UUID <<PK>>
-  --
+entity User {
+  * id : UUID
   email : VARCHAR
   name : VARCHAR
-  created_at : TIMESTAMP
-  updated_at : TIMESTAMP
 }
 
-entity "House" as H {
-  * id : UUID <<PK>>
-  --
-  user_id : UUID <<FK>>
+entity House {
+  * id : UUID
+  user_id : UUID
   address : TEXT
   name : VARCHAR
-  created_at : TIMESTAMP
 }
 
-entity "Device" as D {
-  * id : UUID <<PK>>
-  --
-  type_id : UUID <<FK>>
-  house_id : UUID <<FK>>
+entity Device {
+  * id : UUID
+  house_id : UUID
+  type_id : UUID
   serial_number : VARCHAR
   status : VARCHAR
   last_seen : TIMESTAMP
-  metadata : JSONB
 }
 
-entity "DeviceType" as DT {
-  * id : UUID <<PK>>
-  --
+entity DeviceType {
+  * id : UUID
   vendor : VARCHAR
   model : VARCHAR
   category : VARCHAR
-  capabilities : JSONB
 }
 
-entity "TelemetryData" as T {
-  * id : UUID <<PK>>
-  --
-  device_id : UUID <<FK>>
+entity TelemetryData {
+  * id : UUID
+  device_id : UUID
   timestamp : TIMESTAMP
   metric_type : VARCHAR
   value : DECIMAL
 }
 
-entity "Partner" as P {
-  * id : UUID <<PK>>
-  --
-  name : VARCHAR
-  api_endpoint : VARCHAR
-  auth_config : JSONB
-}
+' Связи с кардинальностью
+User ||--o{ House : "1..*"
+House ||--o{ Device : "1..*"
+Device }o--|| DeviceType : "1"
+Device ||--o{ TelemetryData : "1..*"
 
-entity "PartnerDeviceSchema" as PDS {
-  * id : UUID <<PK>>
-  --
-  partner_id : UUID <<FK>>
-  device_type_id : UUID <<FK>>
-  schema_definition : JSONB
-}
-
-U ||--o{ H : owns
-H ||--o{ D : contains
-D }o--|| DT : "is of type"
-D ||--o{ T : generates
-P ||--o{ PDS : defines
-DT ||--o{ PDS : "has schema for"
 @enduml
