@@ -1,4 +1,4 @@
-asyncapi: 3.1.0
+asyncapi: 2.0.6
 info:
   title: Telemetry Events API
   description: Async API for receiving telemetry data and device events
