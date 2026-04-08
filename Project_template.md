@@ -164,7 +164,7 @@
 [device_management_api](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/device_management_api.yaml)
 
 ### **Задание 5. Работа с docker и docker-compose**
-#### **1. Структура файлов**
+#### **1. Структура файлов#### **
 ├── temperature-api/
 │   ├── app.py
 │   ├── requirements.txt
@@ -178,3 +178,15 @@
 [smart_home](https://github.com/KIProkopenko/architecture-warmhouse/tree/warmhouse/smart_home)
 [docker-compose](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/docker-compose.yml)
 [smarthome-api.postman_collection](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/smarthome-api.postman_collection.json)
+
+#### **2. Проверка localhost**
+<img width="974" height="118" alt="image" src="https://github.com/user-attachments/assets/bc5457c4-d3ac-4d99-8e38-74f958f87415" />
+
+
+#### **2. Проверка температуры( должна быть разная)**
+<img width="817" height="152" alt="image" src="https://github.com/user-attachments/assets/b70b093a-3986-48d7-9e67-bc89865dc0cf" />
+
+<img width="569" height="121" alt="image" src="https://github.com/user-attachments/assets/c819bc97-91ee-4aef-916e-318ade7b2474" />
+
+
+
