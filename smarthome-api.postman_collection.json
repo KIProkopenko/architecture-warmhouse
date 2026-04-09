@@ -1,0 +1,29 @@
+{
+  "info": {
+    "name": "Smarthome API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Temperature",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/temperature?location=Living Room",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["temperature"],
+          "query": [
+            {
+              "key": "location",
+              "value": "Living Room"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

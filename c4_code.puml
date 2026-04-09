@@ -1,0 +1,81 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+skinparam classAttributeIconSize 0
+
+title Device Management — Диаграмма кода (C4 Level 4)
+
+package "Application Layer" {
+    class DeviceController {
+        + registerDevice(token: String)
+        + updateStatus(id: UUID, status: String)
+        + getDevicesByUser(userId: UUID)
+    }
+    
+    class DeviceMapper {
+        + toDomain(deviceDto: DeviceDto): Device
+        + toDto(device: Device): DeviceDto
+    }
+}
+
+package "Domain Layer" {
+    class DeviceService {
+        - DeviceRepository repo
+        - PartnerIntegrationService partnerSvc
+        --
+        + registerDevice(token: String): Device
+        + updateStatus(id: UUID, status: String)
+        + getDevicesByUser(userId: UUID): List<Device>
+        - validateToken(token: String): boolean
+    }
+    
+    interface DeviceRepository {
+        + save(device: Device): Device
+        + findById(id: UUID): Device
+        + findByToken(token: String): Device
+    }
+    
+    class Device {
+        - UUID id
+        - String type
+        - UUID userId
+        - String status
+        - Timestamp lastSeen
+        --
+        + isActive(): boolean
+        + isOnline(): boolean
+    }
+}
+
+package "Infrastructure Layer" {
+    class PostgresDeviceRepository {
+        + save(device: Device): Device
+        + findById(id: UUID): Device
+        + findByToken(token: String): Device
+    }
+    
+    class MQTTDeviceAdapter {
+        + publishCommand(deviceId: UUID, command: String)
+        + subscribeToTelemetry()
+    }
+    
+    interface PartnerIntegrationService {
+        + fetchDeviceSchema(vendor: String): DeviceSchema
+        + notifyNewDevice(device: Device)
+    }
+}
+
+' Связи
+DeviceController --> DeviceMapper : uses
+DeviceController --> DeviceService : calls
+
+DeviceService --> DeviceRepository : uses
+DeviceService --> PartnerIntegrationService : delegates to
+
+PostgresDeviceRepository ..|> DeviceRepository : implements
+MQTTDeviceAdapter --> Device : sends commands to
+
+DeviceService ..> Device : creates/manages
+
+@enduml

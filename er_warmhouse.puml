@@ -1,0 +1,50 @@
+@startuml
+' КЛАССИЧЕСКИЙ ER-СТИЛЬ (без C4, без компонентов)
+' Используем entity + relation + кардинальность
+
+left to right direction
+
+entity User {
+  * id : UUID
+  email : VARCHAR
+  name : VARCHAR
+}
+
+entity House {
+  * id : UUID
+  user_id : UUID
+  address : TEXT
+  name : VARCHAR
+}
+
+entity Device {
+  * id : UUID
+  house_id : UUID
+  type_id : UUID
+  serial_number : VARCHAR
+  status : VARCHAR
+  last_seen : TIMESTAMP
+}
+
+entity DeviceType {
+  * id : UUID
+  vendor : VARCHAR
+  model : VARCHAR
+  category : VARCHAR
+}
+
+entity TelemetryData {
+  * id : UUID
+  device_id : UUID
+  timestamp : TIMESTAMP
+  metric_type : VARCHAR
+  value : DECIMAL
+}
+
+' Связи с кардинальностью
+User ||--o{ House : "1..*"
+House ||--o{ Device : "1..*"
+Device }o--|| DeviceType : "1"
+Device ||--o{ TelemetryData : "1..*"
+
+@enduml

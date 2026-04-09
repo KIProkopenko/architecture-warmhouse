@@ -52,7 +52,11 @@
 
 Границы контекстов (Bounded Contexts) будут соответствовать этим доменам, определяя, какие данные и функции принадлежат какому микросервису.
 
-#### **4. Визуализация контекста системы (C4**
+#### **4. Визуализация контекста системы (C4)**
+[C4_context](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/%D0%A14_context(warmhouse).puml)
+
+<img width="414" height="789" alt="c4_context(warmhouse)" src="https://github.com/user-attachments/assets/201c19bb-ebe4-4266-bf8c-53b2198c3322" />
+
 
 
 **Описание диаграммы:**
@@ -66,124 +70,126 @@
 
 Эта диаграмма даёт общее представление о системе и её месте в окружающей среде.
 
-[Посетите Яндекс](https://ya.ru/)
+
 Задание 2. Проектирование микросервисной архитектуры
 В этом задании вам нужно предоставить только диаграммы в модели C4. Мы не просим вас отдельно описывать получившиеся микросервисы и то, как вы определили взаимодействия между компонентами To-Be системы. Если вы правильно подготовите диаграммы C4, они и так это покажут.
 
-Диаграмма контейнеров (Containers)
+[Диаграмма контейнеров](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/c4_container.puml)
+
+<img width="1216" height="1791" alt="c4_container(warmhouse)" src="https://github.com/user-attachments/assets/9a4d2b74-d445-476f-8aef-2a754638ced2" />
+
 
 Добавьте диаграмму.
 
-Диаграмма компонентов (Components)
+[Диаграмма компонентов](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/C4_component.puml)
+
+<img width="540" height="936" alt="c4_component(warmhouse)" src="https://github.com/user-attachments/assets/64701ec7-e056-4c78-81fc-95ebf64a5cee" />
+
 
 Добавьте диаграмму для каждого из выделенных микросервисов.
 
-Диаграмма кода (Code)
+[Диаграмма кода](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/c4_code.puml)
+
+
+<img width="1494" height="1000" alt="c4_code(warmhouse)" src="https://github.com/user-attachments/assets/138ff748-3b03-4875-8542-b4715a6c0863" />
 
 Добавьте одну диаграмму или несколько.
 
-Задание 3. Разработка ER-диаграммы
-Добавьте сюда ER-диаграмму. Она должна отражать ключевые сущности системы, их атрибуты и тип связей между ними.
+### **Задание 3. Разработка ER-диаграммы**
+#### **1. Идентификация сущностей**
 
-Задание 4. Создание и документирование API
-1. Тип API
-Укажите, какой тип API вы будете использовать для взаимодействия микросервисов. Объясните своё решение.
+На основе описания системы (управление устройствами, телеметрия, пользователи, дома, модули, интеграции с партнёрами), выделим основные сущности:
 
-2. Документация API
-Здесь приложите ссылки на документацию API для микросервисов, которые вы спроектировали в первой части проектной работы. Для документирования используйте Swagger/OpenAPI или AsyncAPI.
+1. **User** (Пользователь)
+2. **House** (Дом)
+3. **Device** (Устройство)
+4. **DeviceType** (Тип устройства)
+5. **TelemetryData** (Телеметрия)
+6. **Module** (Модуль - например, "отопление", "освещение", "ворота")
+7. **Partner** (Партнёр - производитель устройств)
+8. **PartnerDeviceSchema** (Схема устройства партнёра)
 
-Задание 5. Работа с docker и docker-compose
-Перейдите в apps.
+*(Можно выделить и другие, но эти покрывают основной функционал.)*
 
-Там находится приложение-монолит для работы с датчиками температуры. В README.md описано как запустить решение.
+#### **2. Определение атрибутов**
 
-Вам нужно:
+| Сущность             | Атрибуты                                                                                     |
+|----------------------|----------------------------------------------------------------------------------------------|
+| **User**             | `id: UUID`, `email: VARCHAR`, `name: VARCHAR`, `created_at: TIMESTAMP`, `updated_at: TIMESTAMP` |
+| **House**            | `id: UUID`, `user_id: UUID (FK)`, `address: TEXT`, `name: VARCHAR`, `created_at: TIMESTAMP`     |
+| **Device**           | `id: UUID`, `type_id: UUID (FK)`, `house_id: UUID (FK)`, `serial_number: VARCHAR`, `status: VARCHAR`, `last_seen: TIMESTAMP`, `metadata: JSONB` |
+| **DeviceType**       | `id: UUID`, `vendor: VARCHAR`, `model: VARCHAR`, `category: VARCHAR` (например, "thermostat", "light", "gate"), `capabilities: JSONB` |
+| **TelemetryData**    | `id: UUID`, `device_id: UUID (FK)`, `timestamp: TIMESTAMP`, `metric_type: VARCHAR` (например, "temperature", "humidity"), `value: DECIMAL` |
+| **Module**           | `id: UUID`, `name: VARCHAR`, `description: TEXT` (например, "Освещение", "Отопление", "Ворота") |
+| **Partner**          | `id: UUID`, `name: VARCHAR`, `api_endpoint: VARCHAR`, `auth_config                    |
+| **PartnerDeviceSchema** | `id: UUID`, `partner_id: UUID (FK)`, `device_type_id: UUID (FK)`, `schema_definition: JSONB` |
 
-сделать простое приложение temperature-api на любом удобном для вас языке программирования, которое при запросе /temperature?location= будет отдавать рандомное значение температуры.
-Locations - название комнаты, sensorId - идентификатор названия комнаты
+---
 
-	// If no location is provided, use a default based on sensor ID
-	if location == "" {
-		switch sensorID {
-		case "1":
-			location = "Living Room"
-		case "2":
-			location = "Bedroom"
-		case "3":
-			location = "Kitchen"
-		default:
-			location = "Unknown"
-		}
-	}
+#### **3. Описание связей**
 
-	// If no sensor ID is provided, generate one based on location
-	if sensorID == "" {
-		switch location {
-		case "Living Room":
-			sensorID = "1"
-		case "Bedroom":
-			sensorID = "2"
-		case "Kitchen":
-			sensorID = "3"
-		default:
-			sensorID = "0"
-		}
-	}
-Приложение следует упаковать в Docker и добавить в docker-compose. Порт по умолчанию должен быть 8081
+| Связь                                | Тип                  | Описание                                                                                   |
+|-------------------------------------|----------------------|--------------------------------------------------------------------------------------------|
+| **User** — **House**                | 1 к N                | Один пользователь может владеть несколькими домами.                                       |
+| **House** — **Device**              | 1 к N                | Один дом может содержать несколько устройств.                                             |
+| **DeviceType** — **Device**         | 1 к N                | Один тип устройства может быть у многих устройств.                                        |
+| **Device** — **TelemetryData**      | 1 к N                | Одно устройство может генерировать много записей телеметрии.                               |
+| **Partner** — **PartnerDeviceSchema**| 1 к N                | Один партнёр может предоставлять схемы для множества типов устройств.                     |
+| **DeviceType** — **PartnerDeviceSchema**| N к 1               | Один тип устройства может соответствовать одной схеме партнёра.                           |
 
-Кроме того для smart_home приложения требуется база данных - добавьте в docker-compose файл настройки для запуска postgres с указанием скрипта инициализации ./smart_home/init.sql
+**(Связи Many-to-Many, если возникнут, моделируются через промежуточные таблицы.)**
+[Er_диаграмма](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/er_warmhouse.puml)
 
-Для проверки можно использовать Postman коллекцию smarthome-api.postman_collection.json и вызвать:
 
-Create Sensor
-Get All Sensors
-Должно при каждом вызове отображаться разное значение температуры
+<img width="968" height="290" alt="er_warmhouse" src="https://github.com/user-attachments/assets/d96dc068-2481-4760-bb02-197da2eb5ce4" />
 
-Ревьюер будет проверять точно так же.
 
-About
-No description, website, or topics provided.
-Resources
- Readme
- Activity
- Custom properties
-Stars
- 3 stars
-Watchers
- 6 watching
-Forks
- 330 forks
-Report repository
-Releases
-No releases published
-Packages
-No packages published
-Contributors
-3
-@usmanovbf
-usmanovbf usmanovbf
-@shestera
-shestera Leonid Shestera
-@db-exp
-db-exp
-Languages
-Go
-92.1%
- 
-Shell
-4.5%
- 
-Dockerfile
-3.4%
-Footer
-© 2026 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Community
-Docs
-Contact
-Manage cookies
-Do not share my personal information
+###**Задание 4. Создание и документирование API**
+
+#### **1. Выбор типов API**
+
+- **REST API**:
+  - Для синхронных вызовов: получение списка устройств, отправка команд,ция, получение профиля.
+  - Примеры: `GET /devices`, `POST /commands`, `GET /users/{id}`
+- **AsyncAPI**:
+  - Для асинхронных событий: телеметрия с датчиков, события подключения/отключения устройств, срабатывания сценариев.
+  - Примеры: `telemetry.data.received`, `device.status.changed`
+
+
+#### **2. Документирование API**
+[telemetry_events_asyncapi](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/telemetry_events_asyncapi.yaml)
+
+[home_control_api](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/home_control_api.yaml)
+
+[device_management_api](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/device_management_api.yaml)
+
+### **Задание 5. Работа с docker и docker-compose**
+#### **1. Структура файлов#### **
+├── temperature-api/
+│   ├── app.py
+│   ├── requirements.txt
+│   └── Dockerfile
+├── smart_home/
+│   └── init.sql
+├── docker-compose.yml
+└── smarthome-api.postman_collection.json
+
+[temperature-api](https://github.com/KIProkopenko/architecture-warmhouse/tree/warmhouse/temperature-api)
+[smart_home](https://github.com/KIProkopenko/architecture-warmhouse/tree/warmhouse/smart_home)
+[docker-compose](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/docker-compose.yml)
+[smarthome-api.postman_collection](https://github.com/KIProkopenko/architecture-warmhouse/blob/warmhouse/smarthome-api.postman_collection.json)
+
+#### **2. Проверка localhost**
+<img width="974" height="118" alt="image" src="https://github.com/user-attachments/assets/bc5457c4-d3ac-4d99-8e38-74f958f87415" />
+
+
+#### **2. Проверка температуры( должна быть разная)**
+<img width="817" height="152" alt="image" src="https://github.com/user-attachments/assets/b70b093a-3986-48d7-9e67-bc89865dc0cf" />
+
+<img width="569" height="121" alt="image" src="https://github.com/user-attachments/assets/c819bc97-91ee-4aef-916e-318ade7b2474" />
+
+<img width="968" height="927" alt="image" src="https://github.com/user-attachments/assets/b9650531-97f8-454c-9aac-84c758704fe3" />
+
+
+
+

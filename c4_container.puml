@@ -1,0 +1,49 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Система "Тёплый дом" - Диаграмма контейнеров (To-Be)
+
+Person(user, "Пользователь", "Владелец умного дома")
+
+System_Boundary(warmhouse_system, 'Экосистема "Тёплый дом"') {
+
+  Container(web_ui, "Web UI", "React/Angular", "Интерфейс для управления")
+  Container(api_gateway, "API Gateway", "Kong, Traefik", "Единая точка входа, маршрутизация")
+
+  Container(device_management_service, "Device Management Service", "Java/Kotlin/Go", "Регистрация, настройка, статус устройств")
+  Container(home_control_service, "Home Control Service", "Java/Kotlin/Go", "Управление системами (отопление, свет, ворота)")
+  Container(monitoring_telemetry_service, "Monitoring & Telemetry Service", "Java/Kotlin/Go + Kafka", "Сбор, обработка, хранение данных сенсоров")
+  Container(customer_platform_service, "Customer Platform Service", "Java/Kotlin/Go", "Аутентификация, профиль, подписка SaaS")
+  Container(integration_management_service, "Integration Management Service", "Java/Kotlin/Go", "Подключение и работа с API партнёров")
+
+  ContainerDb(device_db, "Device DB", "PostgreSQL/MySQL", "Хранение информации об устройствах")
+  ContainerDb(telemetry_db, "Telemetry DB", "InfluxDB/PostgreSQL", "Хранение телеметрических данных")
+  ContainerDb(customer_db, "Customer DB", "PostgreSQL", "Хранение данных пользователей")
+  ContainerDb(partner_config_db, "Partner Config DB", "PostgreSQL", "Хранение конфигураций API партнёров")
+
+  Rel(user, web_ui, "Использует", "HTTPS")
+  Rel(web_ui, api_gateway, "Отправляет запросы", "HTTPS")
+  Rel(api_gateway, device_management_service, "Маршрутизирует вызовы", "HTTP/JSON")
+  Rel(api_gateway, home_control_service, "Маршрутизирует вызовы", "HTTP/JSON")
+  Rel(api_gateway, monitoring_telemetry_service, "Маршрутизирует вызовы", "HTTP/JSON")
+  Rel(api_gateway, customer_platform_service, "Маршрутизирует вызовы", "HTTP/JSON")
+
+  Rel(device_management_service, device_db, "Чтение/Запись", "JDBC/ORM")
+  Rel(home_control_service, device_management_service, "Получает список устройств", "HTTP/JSON")
+  Rel(home_control_service, device_management_service, "Отправляет команды", "HTTP/JSON")
+  Rel(monitoring_telemetry_service, telemetry_db, "Запись/Чтение", "JDBC/ORM")
+  Rel(customer_platform_service, customer_db, "Чтение/Запись", "JDBC/ORM")
+  Rel(integration_management_service, partner_config_db, "Чтение/Запись", "JDBC/ORM")
+  Rel(integration_management_service, device_management_service, "Уведомляет о новых устройствах партнёров", "HTTP/JSON")
+  Rel(device_management_service, integration_management_service, "Запрашивает схемы API", "HTTP/JSON")
+}
+
+System_Boundary(partner_infrastructure, "Инфраструктура партнёра") {
+  System(partner_devices, "Устройства партнёров", "Датчики, реле, камеры и т.д.")
+}
+
+Rel(device_management_service, partner_devices, "Подключается и управляет", "MQTT/HTTP")
+Rel(monitoring_telemetry_service, partner_devices, "Опрашивает сенсоры", "MQTT/HTTP")
+Rel(partner_devices, integration_management_service, "Использует API", "HTTP")
+
+@enduml

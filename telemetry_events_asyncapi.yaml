@@ -1,0 +1,64 @@
+asyncapi: 2.0.6
+info:
+  title: Telemetry Events API
+  description: Async API for receiving telemetry data and device events
+  version: 1.0.0
+
+servers:
+  kafka_server:
+    url: 'kafka:9092'
+    protocol: kafka
+
+channels:
+  telemetry.data.received:
+    subscribe:
+      summary: Telemetry data received from a device
+      message:
+        $ref: '#/components/messages/TelemetryMessage'
+
+  device.status.changed:
+    subscribe:
+      summary: Status change event for a device
+      message:
+        $ref: '#/components/messages/DeviceStatusMessage'
+
+components:
+  messages:
+    TelemetryMessage:
+      payload:
+        type: object
+        properties:
+          device_id:
+            type: string
+            format: uuid
+          timestamp:
+            type: string
+            format: date-time
+          metric_type:
+            type: string
+          value:
+            type: number
+            format: double
+        required:
+          - device_id
+          - timestamp
+          - metric_type
+          - value
+
+    DeviceStatusMessage:
+      payload:
+        type: object
+        properties:
+          device_id:
+            type: string
+            format: uuid
+          new_status:
+            type: string
+            enum: [online, offline, error]
+          timestamp:
+            type: string
+            format: date-time
+        required:
+          - device_id
+          - new_status
+          - timestamp
