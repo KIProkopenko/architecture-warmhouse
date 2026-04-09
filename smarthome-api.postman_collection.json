@@ -5,6 +5,45 @@
   },
   "item": [
     {
+      "name": "Create Sensor",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Kitchen Sensor\",\n  \"location\": \"Kitchen\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8081/sensors",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["sensors"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Sensors",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/sensors",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["sensors"]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "Get Temperature",
       "request": {
         "method": "GET",
